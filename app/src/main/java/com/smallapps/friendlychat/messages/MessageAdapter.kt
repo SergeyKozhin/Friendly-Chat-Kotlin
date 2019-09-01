@@ -7,17 +7,22 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.smallapps.friendlychat.databinding.ItemMessageBinding
 
+// RecyclerView Adapter for list of messages
 class MessageAdapter :
     ListAdapter<FriendlyMessage, MessageAdapter.MessageViewHolder>(DiffCallBack) {
+
+    // One item layout inflation
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         return MessageViewHolder.from(parent)
     }
 
+    // Binding data to one item
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
 
+    // ViewHolder class for operations with one message
     class MessageViewHolder private constructor(private val binding: ItemMessageBinding) :
         RecyclerView.ViewHolder(binding.root) {
         companion object {
@@ -36,7 +41,8 @@ class MessageAdapter :
 
     }
 
-    object DiffCallBack : DiffUtil.ItemCallback<FriendlyMessage>() {
+    // DiffCallback singleton for checking difference between items
+    private object DiffCallBack : DiffUtil.ItemCallback<FriendlyMessage>() {
         override fun areItemsTheSame(oldItem: FriendlyMessage, newItem: FriendlyMessage): Boolean {
             return newItem === oldItem
         }

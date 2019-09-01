@@ -1,9 +1,7 @@
 package com.smallapps.friendlychat.messages
 
-
 import android.os.Bundle
 import android.text.Editable
-import android.text.InputFilter
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,11 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.smallapps.friendlychat.databinding.MessangerListBinding
-import kotlinx.android.synthetic.main.messanger_list.*
+import com.smallapps.friendlychat.databinding.FragmentMessagesBinding
 
+// Main chat fragment
 class MessagesFragment : Fragment() {
 
+    // ViewModel lazy initialization
     private val viewModel: MessagesViewModel by lazy {
         ViewModelProviders.of(this).get(MessagesViewModel::class.java)
     }
@@ -24,15 +23,21 @@ class MessagesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
 
+        // Inflation and data binding setting
         val binding =
-            MessangerListBinding.inflate(layoutInflater, container, false)
+            FragmentMessagesBinding.inflate(inflater, container, false)
+
+        //Binding ViewModel to view
         binding.viewModel = viewModel
+
+        // Setting lifecycle owner for observers to work
         binding.lifecycleOwner = this
 
+        // Setting RecyclerView Adapter for list of messages
         val adapter = MessageAdapter()
         binding.messageListView.adapter = adapter
 
-        viewModel.hideProgressBar()
+        // TextChangeListener for input message field to enable or disable send button
         binding.messageEditText.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
@@ -49,9 +54,7 @@ class MessagesFragment : Fragment() {
             }
         })
 
-        binding.messageEditText.filters =
-            arrayOf<InputFilter>(InputFilter.LengthFilter(MESSAGE_LENGTH))
-
+        // Observer for handling message sending
         viewModel.sendingMessage.observe(viewLifecycleOwner, Observer {
             if (it) {
 
@@ -61,6 +64,7 @@ class MessagesFragment : Fragment() {
             }
         })
 
+        // Observer for handling image picking
         viewModel.pickingImage.observe(viewLifecycleOwner, Observer {
             if (it) {
                 // TODO

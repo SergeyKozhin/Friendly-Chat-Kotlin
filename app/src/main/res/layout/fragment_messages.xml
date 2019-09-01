@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.smallapps.friendlychat.MainActivity">
+    tools:context=".messages.MessagesFragment">
 
     <data>
         <import type="android.view.View"/>
@@ -54,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
+            app:maxLength="@{viewModel.MESSAGE_LENGTH}"
             app:layout_constraintBottom_toBottomOf="@+id/photoPickerButton"
             app:layout_constraintEnd_toStartOf="@+id/sendButton"
             app:layout_constraintStart_toEndOf="@+id/photoPickerButton"
