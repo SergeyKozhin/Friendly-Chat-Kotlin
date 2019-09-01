@@ -9,6 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.database.FirebaseDatabase
+import com.smallapps.friendlychat.database.ChatAPI
+import com.smallapps.friendlychat.database.FriendlyMessage
 import com.smallapps.friendlychat.databinding.FragmentMessagesBinding
 
 // Main chat fragment
@@ -54,11 +57,17 @@ class MessagesFragment : Fragment() {
             }
         })
 
+        val fireBaseDatabase = FirebaseDatabase.getInstance()
+        val fireBaseReference = fireBaseDatabase.reference.child("messages")
+
         // Observer for handling message sending
         viewModel.sendingMessage.observe(viewLifecycleOwner, Observer {
             if (it) {
-
-
+                ChatAPI.sendMessage(
+                    FriendlyMessage(
+                        binding.messageEditText.text.toString(),
+                        viewModel.username,
+                        null))
                 binding.messageEditText.setText("")
                 viewModel.onSendMessageCompleted()
             }

@@ -3,6 +3,7 @@ package com.smallapps.friendlychat.messages
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.smallapps.friendlychat.database.FriendlyMessage
 
 // ViewModel for main messages screen
 class MessagesViewModel : ViewModel() {

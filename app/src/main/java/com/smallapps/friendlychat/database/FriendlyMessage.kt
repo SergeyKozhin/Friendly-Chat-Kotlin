@@ -1,4 +1,4 @@
-package com.smallapps.friendlychat.messages
+package com.smallapps.friendlychat.database
 
 // Simple data class, representing one message
 data class FriendlyMessage(

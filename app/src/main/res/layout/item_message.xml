@@ -9,7 +9,7 @@
 
         <variable
             name="message"
-            type="com.smallapps.friendlychat.messages.FriendlyMessage" />
+            type="com.smallapps.friendlychat.database.FriendlyMessage" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.smallapps.friendlychat.database.FriendlyMessage
 import com.smallapps.friendlychat.databinding.ItemMessageBinding
 
 // RecyclerView Adapter for list of messages
