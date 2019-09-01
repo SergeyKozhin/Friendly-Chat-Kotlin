@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.smallapps.friendlychat.databinding.FragmentMessagesBinding
 
 // Main chat fragment
@@ -16,7 +16,7 @@ class MessagesFragment : Fragment() {
 
     // ViewModel lazy initialization
     private val viewModel: MessagesViewModel by lazy {
-        ViewModelProviders.of(this).get(MessagesViewModel::class.java)
+        ViewModelProvider(this).get(MessagesViewModel::class.java)
     }
 
     override fun onCreateView(
