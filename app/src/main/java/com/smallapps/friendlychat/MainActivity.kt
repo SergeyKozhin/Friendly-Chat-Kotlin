@@ -38,6 +38,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         FirebaseApp.initializeApp(this)
+
+       setSupportActionBar(findViewById(R.id.my_toolbar))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

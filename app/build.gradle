@@ -70,5 +70,8 @@ dependencies {
     // Multidex
     implementation 'com.android.support:multidex:1.0.3'
 
+    //Design
+    implementation "com.google.android.material:material:$version_material"
+
 
 }
