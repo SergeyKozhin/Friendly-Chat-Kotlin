@@ -16,8 +16,8 @@ class ChatAPI(private val app: Application) {
     private val dataBaseReference = FirebaseDatabase.getInstance().reference
 
     // List of messages received
-    private val _messages = MutableLiveData<List<FriendlyMessage>>()
-    val messages: LiveData<List<FriendlyMessage>>
+    private val _messages = MutableLiveData<List<FriendlyMessageDomain>>()
+    val messages: LiveData<List<FriendlyMessageDomain>>
         get() = _messages
 
     // Listener for new messages incoming
@@ -27,29 +27,55 @@ class ChatAPI(private val app: Application) {
         }
 
         override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            val newMessage = p0.getValue(FriendlyMessageDataBase::class.java)
+            val key = p0.key
+            newMessage?.let {
+                val ind = messages.value?.indexOfFirst {
+                    it.key == key
+                }
+                if (ind != -1 && ind != null) {
+                    val list = messages.value!!
+                    _messages.value =
+                        list.subList(0, ind) +
+                                listOf(newMessage.toDomain(key)) +
+                                list.subList(ind + 1, list.size)
+                }
+            }
         }
 
         override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-            val message = p0.getValue(FriendlyMessage::class.java)
+            val message = p0.getValue(FriendlyMessageDataBase::class.java)
             message?.let {
+                val domainMessage = message.toDomain(p0.key)
                 if (_messages.value == null) {
-                    _messages.value = listOf(message)
+                    _messages.value = listOf(domainMessage)
                 } else {
-                    _messages.value = listOf(message) + messages.value!!
+                    _messages.value = listOf(domainMessage) + messages.value!!
                 }
                 Log.i("Chat", "Added: ${message.text}")
             }}
 
         override fun onChildRemoved(p0: DataSnapshot) {
+            val newMessage = p0.getValue(FriendlyMessageDataBase::class.java)
+            val key = p0.key
+            newMessage?.let {
+                val ind = messages.value?.indexOfFirst {
+                    it.key == key
+                }
+                if (ind != -1 && ind != null) {
+                    val list = messages.value!!
+                    _messages.value =
+                        list.subList(0, ind) +
+                                list.subList(ind + 1, list.size)
+                }
+            }
         }
     }
 
-    fun sendMessage(message: FriendlyMessage) {
+    fun sendMessage(message: FriendlyMessageDataBase) {
         dataBaseReference.child("messages")
             .push()
             .setValue(message)
