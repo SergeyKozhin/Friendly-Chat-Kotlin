@@ -32,7 +32,7 @@
             android:layout_weight="0"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="@{message.text}"
-            android:visibility="@{message.photoUrl == null? View.VISIBLE : View.GONE}"
+            android:visibility="@{message.text == null? View.GONE : View.VISIBLE}"
             tools:text="Message" />
 
         <TextView

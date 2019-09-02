@@ -1,6 +1,7 @@
 package com.smallapps.friendlychat.messages
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -37,7 +38,7 @@ class MessagesViewModel(app: Application) : AndroidViewModel(app) {
     // Sending message state
     private val _sendingMessage = MutableLiveData<Boolean>(false)
     val sendingMessage: LiveData<Boolean>
-        get() =  _sendingMessage
+        get() = _sendingMessage
 
     // Picking Image state
     private val _pickingImage = MutableLiveData<Boolean>(false)
@@ -59,13 +60,19 @@ class MessagesViewModel(app: Application) : AndroidViewModel(app) {
         chatAPI.sendMessage(message)
     }
 
+    fun uploadImage(img: Uri?) {
+        img?.let {
+            chatAPI.uploadImage(img)
+        }
+    }
+
     // Functions for enable/disable send button
     fun enableSendButton() {
         _sendButtonEnabled.value = true
     }
 
     fun disableSendButton() {
-        _sendButtonEnabled.value =false
+        _sendButtonEnabled.value = false
     }
 
     // Functions for operating sending message state

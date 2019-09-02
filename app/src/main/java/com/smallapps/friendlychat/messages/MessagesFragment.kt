@@ -1,5 +1,6 @@
 package com.smallapps.friendlychat.messages
 
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -79,12 +80,7 @@ class MessagesFragment : Fragment() {
         // Observer for handling image picking
         viewModel.pickingImage.observe(viewLifecycleOwner, Observer {
             if (it) {
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    .setType("image/jpeg")
-                    .putExtra(Intent.EXTRA_LOCAL_ONLY, true)
-                startActivityForResult(
-                    Intent.createChooser(intent, "Complete action using"),
-                    RC_PHOTO_PICKER)
+                initiatePhotoPicking()
                 viewModel.onPickImageCompleted()
             }
         })
@@ -103,9 +99,25 @@ class MessagesFragment : Fragment() {
         return binding.root
     }
 
+    private fun initiatePhotoPicking() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+            .setType("image/jpeg")
+            .putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+        startActivityForResult(
+            Intent.createChooser(intent, "Complete action using"),
+            RC_PHOTO_PICKER)
+    }
+
     override fun onResume() {
         super.onResume()
         viewModel.initializeChat()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
+            viewModel.uploadImage(data?.data)
+        }
     }
 
     override fun onPause() {

@@ -1,19 +1,28 @@
 package com.smallapps.friendlychat.database
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 
 // Api for interacting with database
 class ChatAPI(private val app: Application) {
     // Reference to database
     private val dataBaseReference = FirebaseDatabase.getInstance().reference
+
+    //Reference to storage
+    private val storageReference = FirebaseStorage.getInstance().reference
 
     // List of messages received
     private val _messages = MutableLiveData<List<FriendlyMessageDomain>>()
@@ -79,6 +88,35 @@ class ChatAPI(private val app: Application) {
         dataBaseReference.child("messages")
             .push()
             .setValue(message)
+    }
+
+    fun uploadImage(imgUri: Uri) {
+        val imgRef =
+            storageReference.child("chat_photos").child(imgUri.lastPathSegment!!)
+        val uploadTask = imgRef.putFile(imgUri)
+
+        uploadTask.addOnFailureListener{
+            Toast.makeText(app.applicationContext, "Upload failed!", Toast.LENGTH_SHORT).show()
+        }.addOnSuccessListener {
+            Toast.makeText(app.applicationContext, "Image uploaded!", Toast.LENGTH_SHORT).show()
+        }
+
+        val urlTask =
+            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> {
+                if (!it.isSuccessful) {
+                    it.exception?.let {
+                        throw it
+                    }
+                }
+                return@Continuation imgRef.downloadUrl
+            }).addOnCompleteListener {
+                sendMessage( FriendlyMessageDataBase(
+                    null,
+                    FirebaseAuth.getInstance().currentUser?.displayName,
+                    it.result.toString()
+                ))
+        }
+
     }
 
     fun setMessageListener() {
