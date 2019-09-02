@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.smallapps.friendlychat.database.FriendlyMessageDataBase
 import com.smallapps.friendlychat.databinding.FragmentMessagesBinding
+import kotlinx.android.synthetic.main.fragment_messages.*
 
 // Main chat fragment
 class MessagesFragment : Fragment() {
@@ -57,21 +58,18 @@ class MessagesFragment : Fragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (p0.toString().trim().isNotEmpty()) {
-                    viewModel.enableSendButton()
+                    viewModel.setMessageText(p0.toString())
                 } else {
-                    viewModel.disableSendButton()
+                    viewModel.setMessageText(null)
                 }
+
             }
         })
 
         // Observer for handling message sending
         viewModel.sendingMessage.observe(viewLifecycleOwner, Observer {
             if (it) {
-                viewModel.sendMessage(
-                    FriendlyMessageDataBase(
-                        binding.messageEditText.text.toString(),
-                        viewModel.username,
-                        null))
+                viewModel.sendMessage()
                 binding.messageEditText.setText("")
                 viewModel.onSendMessageCompleted()
             }

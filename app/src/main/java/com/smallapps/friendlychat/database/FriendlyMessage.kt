@@ -2,9 +2,9 @@ package com.smallapps.friendlychat.database
 
 // Simple data class, representing one message in Database
 data class FriendlyMessageDataBase(
-    val text: String? = null,
-    val name: String? = null,
-    val photoUrl: String? = null){
+    var text: String? = null,
+    var name: String? = null,
+    var photoUrl: String? = null){
 
     fun toDomain(key: String?): FriendlyMessageDomain {
         return FriendlyMessageDomain(

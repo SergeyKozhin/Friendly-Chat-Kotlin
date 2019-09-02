@@ -2,6 +2,7 @@ package com.smallapps.friendlychat.messages
 
 import android.app.Application
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +11,7 @@ import com.smallapps.friendlychat.database.ChatAPI
 import com.smallapps.friendlychat.database.FriendlyMessageDataBase
 
 // ViewModel for main messages screen
-class MessagesViewModel(app: Application) : AndroidViewModel(app) {
+class MessagesViewModel(private val app: Application) : AndroidViewModel(app) {
 
     // Constants
     companion object {
@@ -19,6 +20,14 @@ class MessagesViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private val chatAPI = ChatAPI(getApplication())
+
+    private val _currentMessageText = MutableLiveData<String>()
+    val currentMessageText: LiveData<String>
+        get() = _currentMessageText
+
+    private val _currentMessageUrl = MutableLiveData<String>()
+    val currentMessageUrl: LiveData<String>
+        get() = _currentMessageUrl
 
     // Current username
     var username: String? = null
@@ -30,11 +39,6 @@ class MessagesViewModel(app: Application) : AndroidViewModel(app) {
     val progressBarVisible: LiveData<Boolean>
         get() = _progressBarVisible
 
-    // Enable/disable send button
-    private val _sendButtonEnabled = MutableLiveData<Boolean>(false)
-    val sendButtonEnabled: LiveData<Boolean>
-        get() = _sendButtonEnabled
-
     // Sending message state
     private val _sendingMessage = MutableLiveData<Boolean>(false)
     val sendingMessage: LiveData<Boolean>
@@ -44,6 +48,10 @@ class MessagesViewModel(app: Application) : AndroidViewModel(app) {
     private val _pickingImage = MutableLiveData<Boolean>(false)
     val pickingImage: LiveData<Boolean>
         get() = _pickingImage
+
+    init {
+        username = FirebaseAuth.getInstance().currentUser?.displayName
+    }
 
     fun initializeChat() {
         username = FirebaseAuth.getInstance().currentUser?.displayName
@@ -56,23 +64,26 @@ class MessagesViewModel(app: Application) : AndroidViewModel(app) {
     }
 
 
-    fun sendMessage(message: FriendlyMessageDataBase) {
-        chatAPI.sendMessage(message)
+    fun sendMessage() {
+        chatAPI.sendMessage(
+            FriendlyMessageDataBase(
+                currentMessageText.value,
+                username,
+                currentMessageUrl.value
+            )
+        )
+        _currentMessageText.value = null
+        _currentMessageUrl.value = null
     }
 
     fun uploadImage(img: Uri?) {
         img?.let {
-            chatAPI.uploadImage(img)
+            val urlTask = chatAPI.uploadImage(img)
+            urlTask.addOnCompleteListener {
+                Toast.makeText(app.applicationContext, "Image uploaded!", Toast.LENGTH_SHORT).show()
+                _currentMessageUrl.value = it.result.toString()
+            }
         }
-    }
-
-    // Functions for enable/disable send button
-    fun enableSendButton() {
-        _sendButtonEnabled.value = true
-    }
-
-    fun disableSendButton() {
-        _sendButtonEnabled.value = false
     }
 
     // Functions for operating sending message state
@@ -82,6 +93,10 @@ class MessagesViewModel(app: Application) : AndroidViewModel(app) {
 
     fun onSendMessageCompleted() {
         _sendingMessage.value = false
+    }
+
+    fun setMessageText(text: String?) {
+        _currentMessageText.value = text
     }
 
     // Functions for operating picking image state

@@ -90,33 +90,23 @@ class ChatAPI(private val app: Application) {
             .setValue(message)
     }
 
-    fun uploadImage(imgUri: Uri) {
+    fun uploadImage(imgUri: Uri): Task<Uri> {
         val imgRef =
             storageReference.child("chat_photos").child(imgUri.lastPathSegment!!)
         val uploadTask = imgRef.putFile(imgUri)
 
         uploadTask.addOnFailureListener{
             Toast.makeText(app.applicationContext, "Upload failed!", Toast.LENGTH_SHORT).show()
-        }.addOnSuccessListener {
-            Toast.makeText(app.applicationContext, "Image uploaded!", Toast.LENGTH_SHORT).show()
         }
 
-        val urlTask =
-            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> {
+        return uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> {
                 if (!it.isSuccessful) {
                     it.exception?.let {
                         throw it
                     }
                 }
                 return@Continuation imgRef.downloadUrl
-            }).addOnCompleteListener {
-                sendMessage( FriendlyMessageDataBase(
-                    null,
-                    FirebaseAuth.getInstance().currentUser?.displayName,
-                    it.result.toString()
-                ))
-        }
-
+            })
     }
 
     fun setMessageListener() {

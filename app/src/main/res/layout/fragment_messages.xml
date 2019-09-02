@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:enabled="@{viewModel.sendButtonEnabled}"
+            android:enabled="@{(viewModel.currentMessageText != null)||(viewModel.currentMessageUrl != null)}"
             android:onClick="@{() -> viewModel.onSendMessage()}"
             android:text="@string/send_button_label"
             app:layout_constraintBottom_toBottomOf="@+id/messageEditText"
