@@ -64,6 +64,8 @@ dependencies {
     implementation "com.google.firebase:firebase-storage:19.0.0"
     implementation "com.google.firebase:firebase-inappmessaging:19.0.0"
     implementation "com.google.firebase:firebase-config:19.0.0"
+    implementation 'com.google.android.gms:play-services-auth:17.0.0'
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
 
     // Multidex
     implementation 'com.android.support:multidex:1.0.3'

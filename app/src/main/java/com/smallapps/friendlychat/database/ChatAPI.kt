@@ -1,6 +1,7 @@
 package com.smallapps.friendlychat.database
 
 import android.app.Application
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -34,10 +35,6 @@ class ChatAPI(private val app: Application) {
         }
 
         override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun onChildRemoved(p0: DataSnapshot) {
             val message = p0.getValue(FriendlyMessage::class.java)
             message?.let {
                 if (_messages.value == null) {
@@ -45,18 +42,26 @@ class ChatAPI(private val app: Application) {
                 } else {
                     _messages.value = listOf(message) + messages.value!!
                 }
-            }
+                Log.i("Chat", "Added: ${message.text}")
+            }}
+
+        override fun onChildRemoved(p0: DataSnapshot) {
         }
-    }
-
-
-    init {
-        dataBaseReference.child("messages").addChildEventListener(messageListener)
     }
 
     fun sendMessage(message: FriendlyMessage) {
         dataBaseReference.child("messages")
             .push()
             .setValue(message)
+    }
+
+    fun setMessageListener() {
+        Log.i("Chat", "Listener attached")
+        dataBaseReference.child("messages").addChildEventListener(messageListener)
+    }
+
+    fun detachMessageListener() {
+        dataBaseReference.child("messages").removeEventListener(messageListener)
+        _messages.value  = listOf()
     }
 }

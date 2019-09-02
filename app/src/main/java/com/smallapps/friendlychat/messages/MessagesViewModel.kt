@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
 import com.smallapps.friendlychat.database.ChatAPI
 import com.smallapps.friendlychat.database.FriendlyMessage
 
@@ -20,7 +21,7 @@ class MessagesViewModel(app: Application) : AndroidViewModel(app) {
     private val chatAPI = ChatAPI(getApplication())
 
     // Current username
-    val username = ANONYMOUS
+    var username: String? = null
 
     val friendlyMessages = chatAPI.messages
 
@@ -43,6 +44,16 @@ class MessagesViewModel(app: Application) : AndroidViewModel(app) {
     private val _pickingImage = MutableLiveData<Boolean>(false)
     val pickingImage: LiveData<Boolean>
         get() = _pickingImage
+
+    fun initializeChat() {
+        username = FirebaseAuth.getInstance().currentUser?.displayName
+        chatAPI.setMessageListener()
+    }
+
+    fun destroyChat() {
+        username = ANONYMOUS
+        chatAPI.detachMessageListener()
+    }
 
 
     fun sendMessage(message: FriendlyMessage) {

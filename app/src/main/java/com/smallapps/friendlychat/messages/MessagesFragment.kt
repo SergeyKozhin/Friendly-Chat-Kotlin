@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -29,6 +30,7 @@ class MessagesFragment : Fragment() {
         ViewModelProvider(this, MessagesViewModelFactory(requireNotNull(this.activity).application))
             .get(MessagesViewModel::class.java)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -100,5 +102,13 @@ class MessagesFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.initializeChat()
+    }
 
+    override fun onPause() {
+        super.onPause()
+        viewModel.destroyChat()
+    }
 }
