@@ -27,16 +27,14 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:divider="@android:color/transparent"
-            android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll"
+            android:layout_marginBottom="64dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/messageEditText"
+            app:stackFromEnd="true"
+            app:reverseLayout="true"
+            app:layout_constraintBottom_toBottomOf="@+id/messageEditText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
             tools:listitem="@layout/item_message" />
 
         <ImageButton
@@ -54,11 +52,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            app:maxLength="@{viewModel.MESSAGE_LENGTH}"
             app:layout_constraintBottom_toBottomOf="@+id/photoPickerButton"
             app:layout_constraintEnd_toStartOf="@+id/sendButton"
             app:layout_constraintStart_toEndOf="@+id/photoPickerButton"
-            app:layout_constraintTop_toTopOf="@+id/photoPickerButton" />
+            app:maxLength="@{viewModel.MESSAGE_LENGTH}" />
 
         <Button
             android:id="@+id/sendButton"
@@ -69,8 +66,7 @@
             android:onClick="@{() -> viewModel.onSendMessage()}"
             android:text="@string/send_button_label"
             app:layout_constraintBottom_toBottomOf="@+id/messageEditText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/photoPickerButton" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <ProgressBar
             android:id="@+id/progressBar"

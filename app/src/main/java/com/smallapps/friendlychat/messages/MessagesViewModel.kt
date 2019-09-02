@@ -42,6 +42,18 @@ class MessagesViewModel : ViewModel() {
     val pickingImage: LiveData<Boolean>
         get() = _pickingImage
 
+    // Adding new message
+    fun addMessage(message: FriendlyMessage?) {
+        message?.let {
+            if (_friendlyMessages.value == null) {
+                _friendlyMessages.value = listOf(message)
+            } else {
+                _friendlyMessages.value =
+                    listOf(message) + _friendlyMessages.value as List<FriendlyMessage>
+            }
+        }
+    }
+
     // Functions for enable/disable send button
     fun enableSendButton() {
         _sendButtonEnabled.value = true
