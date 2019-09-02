@@ -4,10 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.smallapps.friendlychat.database.ChatAPI
-import com.smallapps.friendlychat.database.FriendlyMessage
+import com.smallapps.friendlychat.database.FriendlyMessageDataBase
 
 // ViewModel for main messages screen
 class MessagesViewModel(app: Application) : AndroidViewModel(app) {
@@ -56,7 +55,7 @@ class MessagesViewModel(app: Application) : AndroidViewModel(app) {
     }
 
 
-    fun sendMessage(message: FriendlyMessage) {
+    fun sendMessage(message: FriendlyMessageDataBase) {
         chatAPI.sendMessage(message)
     }
 

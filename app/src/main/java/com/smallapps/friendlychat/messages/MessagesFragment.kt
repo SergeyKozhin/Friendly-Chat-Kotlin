@@ -8,19 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.SimpleItemAnimator
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.smallapps.friendlychat.database.ChatAPI
-import com.smallapps.friendlychat.database.FriendlyMessage
+import com.smallapps.friendlychat.database.FriendlyMessageDataBase
 import com.smallapps.friendlychat.databinding.FragmentMessagesBinding
-import kotlinx.coroutines.delay
 
 // Main chat fragment
 class MessagesFragment : Fragment() {
@@ -71,7 +62,7 @@ class MessagesFragment : Fragment() {
         viewModel.sendingMessage.observe(viewLifecycleOwner, Observer {
             if (it) {
                 viewModel.sendMessage(
-                    FriendlyMessage(
+                    FriendlyMessageDataBase(
                         binding.messageEditText.text.toString(),
                         viewModel.username,
                         null))
@@ -83,7 +74,7 @@ class MessagesFragment : Fragment() {
         // Observer for handling image picking
         viewModel.pickingImage.observe(viewLifecycleOwner, Observer {
             if (it) {
-                // TODO
+
                 viewModel.onPickImageCompleted()
             }
         })

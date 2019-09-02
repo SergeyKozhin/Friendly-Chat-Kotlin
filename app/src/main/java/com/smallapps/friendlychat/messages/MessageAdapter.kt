@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.smallapps.friendlychat.database.FriendlyMessage
+import com.smallapps.friendlychat.database.FriendlyMessageDomain
 import com.smallapps.friendlychat.databinding.ItemMessageBinding
 
 // RecyclerView Adapter for list of messages
 class MessageAdapter :
-    ListAdapter<FriendlyMessage, MessageAdapter.MessageViewHolder>(DiffCallBack) {
+    ListAdapter<FriendlyMessageDomain, MessageAdapter.MessageViewHolder>(DiffCallBack) {
 
     // One item layout inflation
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
@@ -35,7 +35,7 @@ class MessageAdapter :
             }
         }
 
-        fun bind(item: FriendlyMessage) {
+        fun bind(item: FriendlyMessageDomain) {
             binding.message = item
             binding.executePendingBindings()
         }
@@ -43,14 +43,17 @@ class MessageAdapter :
     }
 
     // DiffCallback singleton for checking difference between items
-    private object DiffCallBack : DiffUtil.ItemCallback<FriendlyMessage>() {
-        override fun areItemsTheSame(oldItem: FriendlyMessage, newItem: FriendlyMessage): Boolean {
+    private object DiffCallBack : DiffUtil.ItemCallback<FriendlyMessageDomain>() {
+        override fun areItemsTheSame(
+            oldItem: FriendlyMessageDomain,
+            newItem: FriendlyMessageDomain
+        ): Boolean {
             return newItem === oldItem
         }
 
         override fun areContentsTheSame(
-            oldItem: FriendlyMessage,
-            newItem: FriendlyMessage
+            oldItem: FriendlyMessageDomain,
+            newItem: FriendlyMessageDomain
         ): Boolean {
             return newItem == oldItem
         }

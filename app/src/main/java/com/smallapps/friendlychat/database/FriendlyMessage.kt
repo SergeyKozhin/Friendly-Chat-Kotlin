@@ -1,8 +1,6 @@
 package com.smallapps.friendlychat.database
 
-import java.nio.channels.spi.AbstractSelectionKey
-
-// Simple data class, representing one message
+// Simple data class, representing one message in Database
 data class FriendlyMessageDataBase(
     val text: String? = null,
     val name: String? = null,
@@ -15,6 +13,7 @@ data class FriendlyMessageDataBase(
     }
 }
 
+// Simple data class, representing one message in local
 data class FriendlyMessageDomain(
     val text: String? = null,
     val name: String? = null,
