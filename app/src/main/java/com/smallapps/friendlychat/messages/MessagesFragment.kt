@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +26,8 @@ class MessagesFragment : Fragment() {
 
     // ViewModel lazy initialization
     private val viewModel: MessagesViewModel by lazy {
-        ViewModelProvider(this).get(MessagesViewModel::class.java)
+        ViewModelProvider(this, MessagesViewModelFactory(requireNotNull(this.activity).application))
+            .get(MessagesViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -66,7 +68,7 @@ class MessagesFragment : Fragment() {
         // Observer for handling message sending
         viewModel.sendingMessage.observe(viewLifecycleOwner, Observer {
             if (it) {
-                ChatAPI.sendMessage(
+                viewModel.sendMessage(
                     FriendlyMessage(
                         binding.messageEditText.text.toString(),
                         viewModel.username,
@@ -88,34 +90,9 @@ class MessagesFragment : Fragment() {
         viewModel.friendlyMessages.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.submitList(it)
-                Handler().postDelayed(Runnable {
+                Handler().postDelayed({
                         binding.messageListView.smoothScrollToPosition(0)
                 }, 200)
-            }
-        })
-
-
-        //Listener for new data
-        ChatAPI.messagesReference.addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-            }
-
-            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                val message = p0.getValue(FriendlyMessage::class.java)
-                viewModel.addMessage(message)
-            }
-
-            override fun onChildRemoved(p0: DataSnapshot) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
         })
 

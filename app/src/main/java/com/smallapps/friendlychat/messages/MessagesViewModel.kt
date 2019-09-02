@@ -1,12 +1,15 @@
 package com.smallapps.friendlychat.messages
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.smallapps.friendlychat.database.ChatAPI
 import com.smallapps.friendlychat.database.FriendlyMessage
 
 // ViewModel for main messages screen
-class MessagesViewModel : ViewModel() {
+class MessagesViewModel(app: Application) : AndroidViewModel(app) {
 
     // Constants
     companion object {
@@ -14,13 +17,12 @@ class MessagesViewModel : ViewModel() {
         const val MESSAGE_LENGTH = 1000
     }
 
+    private val chatAPI = ChatAPI(getApplication())
+
     // Current username
     val username = ANONYMOUS
 
-    // List of messages
-    private val _friendlyMessages = MutableLiveData<List<FriendlyMessage>>(null)
-    val friendlyMessages: LiveData<List<FriendlyMessage>>
-        get() = _friendlyMessages
+    val friendlyMessages = chatAPI.messages
 
     // Visibility of progress bar
     private val _progressBarVisible = MutableLiveData<Boolean>(false)
@@ -42,16 +44,9 @@ class MessagesViewModel : ViewModel() {
     val pickingImage: LiveData<Boolean>
         get() = _pickingImage
 
-    // Adding new message
-    fun addMessage(message: FriendlyMessage?) {
-        message?.let {
-            if (_friendlyMessages.value == null) {
-                _friendlyMessages.value = listOf(message)
-            } else {
-                _friendlyMessages.value =
-                    listOf(message) + _friendlyMessages.value as List<FriendlyMessage>
-            }
-        }
+
+    fun sendMessage(message: FriendlyMessage) {
+        chatAPI.sendMessage(message)
     }
 
     // Functions for enable/disable send button
