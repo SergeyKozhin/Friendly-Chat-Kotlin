@@ -1,10 +1,11 @@
 package com.smallapps.friendlychat
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -25,12 +26,11 @@ class MainActivity : AppCompatActivity() {
                 AuthUI.getInstance()
                     .createSignInIntentBuilder()
                     .setAvailableProviders(providers)
+                    .setIsSmartLockEnabled(false)
                     .build(),
-                RC_SIGN_IN)
-        } else {
-            Toast.makeText(applicationContext, "You're now signed in!", Toast.LENGTH_SHORT).show()
+                RC_SIGN_IN
+            )
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +46,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return super.onOptionsItemSelected(item)
+        return when (item.itemId) {
+            R.id.sign_out_menu -> {
+                FirebaseAuth.getInstance().signOut()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        auth.addAuthStateListener(authListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        auth.removeAuthStateListener(authListener)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == Activity.RESULT_CANCELED) {
+                finish()
+            }
+        }
     }
 }
+
+

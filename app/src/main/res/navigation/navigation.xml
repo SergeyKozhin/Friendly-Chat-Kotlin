@@ -4,26 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/authenitification">
+    app:startDestination="@id/meassagesFragment">
     <fragment
         android:id="@+id/meassagesFragment"
         android:name="com.smallapps.friendlychat.messages.MessagesFragment"
         android:label="MeassagesFragment"
-        tools:layout="@layout/fragment_messages">
-        <action
-            android:id="@+id/action_meassagesFragment_to_authenitification"
-            app:destination="@id/authenitification"
-            app:popUpTo="@+id/authenitification"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/authenitification"
-        android:name="com.smallapps.friendlychat.auth.AuthenticationFragment"
-        android:label="authenitification" >
-        <action
-            android:id="@+id/action_authenitification_to_meassagesFragment"
-            app:destination="@id/meassagesFragment"
-            app:popUpTo="@+id/authenitification"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_messages"/>
 </navigation>
