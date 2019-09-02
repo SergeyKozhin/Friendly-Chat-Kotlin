@@ -8,7 +8,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -32,7 +31,7 @@ class ChatAPI(private val app: Application) {
     // Listener for new messages incoming
     private val messageListener = object : ChildEventListener {
         override fun onCancelled(p0: DatabaseError) {
-            Toast.makeText(app.applicationContext, "Error: ${p0.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(app.applicationContext, p0.message, Toast.LENGTH_SHORT).show()
         }
 
         override fun onChildMoved(p0: DataSnapshot, p1: String?) {
@@ -94,11 +93,6 @@ class ChatAPI(private val app: Application) {
         val imgRef =
             storageReference.child("chat_photos").child(imgUri.lastPathSegment!!)
         val uploadTask = imgRef.putFile(imgUri)
-
-        uploadTask.addOnFailureListener{
-            Toast.makeText(app.applicationContext, "Upload failed!", Toast.LENGTH_SHORT).show()
-        }
-
         return uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> {
                 if (!it.isSuccessful) {
                     it.exception?.let {
@@ -110,7 +104,6 @@ class ChatAPI(private val app: Application) {
     }
 
     fun setMessageListener() {
-        Log.i("Chat", "Listener attached")
         dataBaseReference.child("messages").addChildEventListener(messageListener)
     }
 

@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
+import com.smallapps.friendlychat.R
 import com.smallapps.friendlychat.database.ChatAPI
 import com.smallapps.friendlychat.database.FriendlyMessageDataBase
 
@@ -80,8 +81,18 @@ class MessagesViewModel(private val app: Application) : AndroidViewModel(app) {
         img?.let {
             val urlTask = chatAPI.uploadImage(img)
             urlTask.addOnCompleteListener {
-                Toast.makeText(app.applicationContext, "Image uploaded!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    app.applicationContext,
+                    app.getString(R.string.image_upload_success),
+                    Toast.LENGTH_SHORT
+                ).show()
                 _currentMessageUrl.value = it.result.toString()
+            }.addOnFailureListener {
+                Toast.makeText(
+                    app.applicationContext,
+                    "${it.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
