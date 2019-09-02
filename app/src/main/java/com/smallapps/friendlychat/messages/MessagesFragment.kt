@@ -1,5 +1,6 @@
 package com.smallapps.friendlychat.messages
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -15,6 +16,10 @@ import com.smallapps.friendlychat.databinding.FragmentMessagesBinding
 
 // Main chat fragment
 class MessagesFragment : Fragment() {
+
+    companion object {
+        const val RC_PHOTO_PICKER = 2
+    }
 
     // ViewModel lazy initialization
     private val viewModel: MessagesViewModel by lazy {
@@ -74,7 +79,12 @@ class MessagesFragment : Fragment() {
         // Observer for handling image picking
         viewModel.pickingImage.observe(viewLifecycleOwner, Observer {
             if (it) {
-
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    .setType("image/jpeg")
+                    .putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+                startActivityForResult(
+                    Intent.createChooser(intent, "Complete action using"),
+                    RC_PHOTO_PICKER)
                 viewModel.onPickImageCompleted()
             }
         })
