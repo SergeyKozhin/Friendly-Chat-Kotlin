@@ -55,7 +55,7 @@ class MessagesViewModel(private val app: Application) : AndroidViewModel(app) {
         get() = _pickingImage
 
     override fun onCleared() {
-        chatAPI.detatchAuthListener()
+        chatAPI.detachAuthListener()
     }
 
     fun sendMessage() {

@@ -6,16 +6,13 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.smallapps.friendlychat.databinding.FragmentMessagesBinding
 import android.graphics.BitmapFactory
-import android.widget.Toast
-import java.io.File
-
+import android.view.*
+import com.google.firebase.auth.FirebaseAuth
+import com.smallapps.friendlychat.R
 
 // Main chat fragment
 class MessagesFragment : Fragment() {
@@ -91,6 +88,7 @@ class MessagesFragment : Fragment() {
             }
         })
 
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -101,6 +99,21 @@ class MessagesFragment : Fragment() {
         startActivityForResult(
             Intent.createChooser(intent, "Complete action using"),
             RC_PHOTO_PICKER)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.sign_out_menu -> {
+                FirebaseAuth.getInstance().signOut()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

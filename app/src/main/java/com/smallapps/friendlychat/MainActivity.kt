@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -40,21 +38,6 @@ class MainActivity : AppCompatActivity() {
         FirebaseApp.initializeApp(this)
 
        setSupportActionBar(findViewById(R.id.my_toolbar))
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.sign_out_menu -> {
-                FirebaseAuth.getInstance().signOut()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     override fun onResume() {

@@ -6,7 +6,7 @@
     tools:context=".messages.MessagesFragment">
 
     <data>
-        <import type="android.view.View"/>
+        <import type="android.view.View" />
 
         <variable
             name="viewModel"
@@ -17,22 +17,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingTop="48dp"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        >
+        android:paddingBottom="@dimen/activity_vertical_margin">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messageListView"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:descendantFocusability="blocksDescendants"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toTopOf="@+id/messageEditText"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"

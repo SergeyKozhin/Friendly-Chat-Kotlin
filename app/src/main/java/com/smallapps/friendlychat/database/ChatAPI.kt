@@ -116,7 +116,7 @@ class ChatAPI(private val app: Application) {
         dataBaseReference.child("messages").removeEventListener(messageListener)
         _messages.value = mutableListOf()
     }
-     fun detatchAuthListener() {
+     fun detachAuthListener() {
          FirebaseAuth.getInstance().removeAuthStateListener(authListener)
      }
 }
