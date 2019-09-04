@@ -25,9 +25,22 @@ fun EditText.setMaxLength(maxLength: Int?) {
 @BindingAdapter("android:layout_height", "android:layout_width")
 fun ImageView.setSize(imgHeight: Int?, imgWidth: Int?) {
     if (imgHeight != null && imgWidth != null) {
+        val maxSize = 800
+        val aspectRatio = imgWidth.toFloat()/imgHeight.toFloat()
+        var newHeight = imgHeight
+        var newWidth = imgWidth
+        if (newHeight > maxSize || newWidth > maxSize) {
+            if (newHeight > newWidth) {
+                newHeight = maxSize
+                newWidth = (newHeight * aspectRatio).toInt()
+            } else {
+                newWidth = maxSize
+                newHeight = (newWidth / aspectRatio).toInt()
+            }
+        }
         val layoutParams = layoutParams
-        layoutParams.height = imgHeight
-        layoutParams.width = imgWidth
+        layoutParams.height = newHeight
+        layoutParams.width = newWidth
         this.layoutParams = layoutParams
     }
 }
