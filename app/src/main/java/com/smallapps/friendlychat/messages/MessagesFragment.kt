@@ -3,7 +3,6 @@ package com.smallapps.friendlychat.messages
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -12,9 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.smallapps.friendlychat.database.FriendlyMessageDataBase
 import com.smallapps.friendlychat.databinding.FragmentMessagesBinding
-import kotlinx.android.synthetic.main.fragment_messages.*
+import android.graphics.BitmapFactory
+import android.widget.Toast
+import java.io.File
+
 
 // Main chat fragment
 class MessagesFragment : Fragment() {
@@ -28,7 +29,6 @@ class MessagesFragment : Fragment() {
         ViewModelProvider(this, MessagesViewModelFactory(requireNotNull(this.activity).application))
             .get(MessagesViewModel::class.java)
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -86,13 +86,10 @@ class MessagesFragment : Fragment() {
         // Observer for updating list
         viewModel.friendlyMessages.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.submitList(it)
-                Handler().postDelayed({
-                        binding.messageListView.smoothScrollToPosition(0)
-                }, 200)
+                adapter.submitList(it
+                ) { binding.messageListView.scrollToPosition(it.size - 1) }
             }
         })
-
 
         return binding.root
     }
@@ -106,20 +103,20 @@ class MessagesFragment : Fragment() {
             RC_PHOTO_PICKER)
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.initializeChat()
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
-            viewModel.uploadImage(data?.data)
+            val options = BitmapFactory.Options()
+            options.inJustDecodeBounds = true
+            BitmapFactory.decodeStream(
+                context!!.contentResolver.openInputStream(data?.data!!),
+                null,
+                options
+            )
+            viewModel.currentMessageImgHeight = options.outHeight
+            viewModel.currentMessageImgWidth = options.outWidth
+            Toast.makeText(context, "Size: ${options.outHeight}, ${options.outWidth}", Toast.LENGTH_SHORT).show()
+            viewModel.uploadImage(data.data)
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        viewModel.destroyChat()
     }
 }

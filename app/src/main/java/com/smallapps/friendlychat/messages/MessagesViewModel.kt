@@ -30,8 +30,12 @@ class MessagesViewModel(private val app: Application) : AndroidViewModel(app) {
     val currentMessageUrl: LiveData<String>
         get() = _currentMessageUrl
 
+    var currentMessageImgHeight: Int? = null
+    var currentMessageImgWidth: Int? = null
+
     // Current username
-    var username: String? = null
+    private val username: String
+        get() = FirebaseAuth.getInstance().currentUser?.displayName ?: ANONYMOUS
 
     val friendlyMessages = chatAPI.messages
 
@@ -50,27 +54,18 @@ class MessagesViewModel(private val app: Application) : AndroidViewModel(app) {
     val pickingImage: LiveData<Boolean>
         get() = _pickingImage
 
-    init {
-        username = FirebaseAuth.getInstance().currentUser?.displayName
+    override fun onCleared() {
+        chatAPI.detatchAuthListener()
     }
-
-    fun initializeChat() {
-        username = FirebaseAuth.getInstance().currentUser?.displayName
-        chatAPI.setMessageListener()
-    }
-
-    fun destroyChat() {
-        username = ANONYMOUS
-        chatAPI.detachMessageListener()
-    }
-
 
     fun sendMessage() {
         chatAPI.sendMessage(
             FriendlyMessageDataBase(
                 currentMessageText.value,
                 username,
-                currentMessageUrl.value
+                currentMessageUrl.value,
+                currentMessageImgHeight,
+                currentMessageImgWidth
             )
         )
         _currentMessageText.value = null

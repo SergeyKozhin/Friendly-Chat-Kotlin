@@ -21,3 +21,13 @@ fun EditText.setMaxLength(maxLength: Int?) {
         this.filters += arrayOf<InputFilter>(InputFilter.LengthFilter(maxLength))
     }
 }
+
+@BindingAdapter("android:layout_height", "android:layout_width")
+fun ImageView.setSize(imgHeight: Int?, imgWidth: Int?) {
+    if (imgHeight != null && imgWidth != null) {
+        val layoutParams = layoutParams
+        layoutParams.height = imgHeight
+        layoutParams.width = imgWidth
+        this.layoutParams = layoutParams
+    }
+}
