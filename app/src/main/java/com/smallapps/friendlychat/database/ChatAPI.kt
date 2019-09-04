@@ -2,7 +2,6 @@ package com.smallapps.friendlychat.database
 
 import android.app.Application
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -60,9 +59,9 @@ class ChatAPI(private val app: Application) {
         }
 
         override fun onChildRemoved(p0: DataSnapshot) {
-            val newMessage = p0.getValue(FriendlyMessageDataBase::class.java)
+            val removedMessage = p0.getValue(FriendlyMessageDataBase::class.java)
             val key = p0.key
-            newMessage?.let {
+            removedMessage?.let {
                 val ind = messages.value?.indexOfFirst {
                     it.key == key
                 }

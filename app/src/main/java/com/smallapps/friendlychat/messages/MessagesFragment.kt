@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.smallapps.friendlychat.databinding.FragmentMessagesBinding
 import android.graphics.BitmapFactory
+import android.os.Parcelable
+import android.util.Log
 import android.view.*
 import com.google.firebase.auth.FirebaseAuth
 import com.smallapps.friendlychat.R
@@ -19,6 +21,7 @@ class MessagesFragment : Fragment() {
 
     companion object {
         const val RC_PHOTO_PICKER = 2
+        const val RECYCLER_STATE = "recycler state"
     }
 
     // ViewModel lazy initialization
@@ -27,12 +30,16 @@ class MessagesFragment : Fragment() {
             .get(MessagesViewModel::class.java)
     }
 
+    private lateinit var binding: FragmentMessagesBinding
+    private var savedState: Parcelable? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
 
         // Inflation and data binding setting
-        val binding =
+        binding =
             FragmentMessagesBinding.inflate(inflater, container, false)
 
         //Binding ViewModel to view
@@ -44,9 +51,12 @@ class MessagesFragment : Fragment() {
         // Setting RecyclerView Adapter for list of messages
         val adapter = MessageAdapter()
         binding.messageListView.adapter = adapter
+        if (savedInstanceState != null) {
+            savedState = savedInstanceState.getParcelable(RECYCLER_STATE)
+        }
 
         // TextChangeListener for input message field to enable or disable send button
-        binding.messageEditText.addTextChangedListener(object: TextWatcher {
+        binding.messageEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
 
@@ -83,8 +93,17 @@ class MessagesFragment : Fragment() {
         // Observer for updating list
         viewModel.friendlyMessages.observe(viewLifecycleOwner, Observer {
             it?.let {
-                adapter.submitList(it
-                ) { binding.messageListView.scrollToPosition(it.size - 1) }
+                val initialSize = adapter.itemCount
+                adapter.submitList(
+                    it
+                ) {
+                    if (savedState != null) {
+                        binding.messageListView.layoutManager!!.onRestoreInstanceState(savedState)
+                        savedState = null
+                    } else if (it.size >= initialSize) {
+                        binding.messageListView.scrollToPosition(it.size - 1)
+                    }
+                }
             }
         })
 
@@ -98,7 +117,15 @@ class MessagesFragment : Fragment() {
             .putExtra(Intent.EXTRA_LOCAL_ONLY, true)
         startActivityForResult(
             Intent.createChooser(intent, "Complete action using"),
-            RC_PHOTO_PICKER)
+            RC_PHOTO_PICKER
+        )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(
+            RECYCLER_STATE,
+            binding.messageListView.layoutManager?.onSaveInstanceState()
+        )
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
