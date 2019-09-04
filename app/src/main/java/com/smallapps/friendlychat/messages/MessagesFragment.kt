@@ -115,7 +115,6 @@ class MessagesFragment : Fragment() {
             )
             viewModel.currentMessageImgHeight = options.outHeight
             viewModel.currentMessageImgWidth = options.outWidth
-            Toast.makeText(context, "Size: ${options.outHeight}, ${options.outWidth}", Toast.LENGTH_SHORT).show()
             viewModel.uploadImage(data.data)
         }
     }
